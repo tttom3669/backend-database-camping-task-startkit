@@ -344,8 +344,27 @@ LIMIT 1;
 -- 6-3. 查詢：計算 11 月份組合包方案的銷售數量
 -- 顯示須包含以下欄位： 組合包方案名稱, 銷售數量
 
+SELECT
+ "CREDIT_PACKAGE".name as "組合包方案名稱",
+  count(*) as "銷售數量"
+FROM  "CREDIT_PURCHASE"
+INNER JOIN "CREDIT_PACKAGE" ON "CREDIT_PACKAGE".id = "CREDIT_PURCHASE".credit_package_id
+WHERE  "CREDIT_PURCHASE".created_at >= '2024-11-01 00:00:00' AND "CREDIT_PURCHASE".created_at <= '2024-11-30 23:59:59'
+GROUP BY "CREDIT_PACKAGE".name;
+
 -- 6-4. 查詢：計算 11 月份總營收（使用 purchase_at 欄位統計）
 -- 顯示須包含以下欄位： 總營收
 
+SELECT sum(price_paid) AS "總營收"
+FROM "CREDIT_PURCHASE"
+WHERE "CREDIT_PURCHASE".purchase_at >= '2024-11-01 00:00:00' 
+AND "CREDIT_PURCHASE".purchase_at <= '2024-11-30 23:59:59';
+
 -- 6-5. 查詢：計算 11 月份有預約課程的會員人數（需使用 Distinct，並用 created_at 和 status 欄位統計）
 -- 顯示須包含以下欄位： 預約會員人數
+
+SELECT count(Distinct("COURSE_BOOKING".user_id)) as "預約會員人數"
+FROM "COURSE_BOOKING"
+WHERE "COURSE_BOOKING".created_at >= '2024-11-01 00:00:00' 
+AND "COURSE_BOOKING".created_at <= '2024-11-30 23:59:59' 
+AND "COURSE_BOOKING".status != '課程已取消';
